@@ -4,7 +4,19 @@
  * unified error normalization, and health status verification.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+function getApiBase() {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl) {
+    return '/api';
+  }
+  const cleanUrl = envUrl.trim().replace(/\/+$/, '');
+  if (!cleanUrl.endsWith('/api')) {
+    return `${cleanUrl}/api`;
+  }
+  return cleanUrl;
+}
+
+const API_BASE = getApiBase();
 
 export class ApiError extends Error {
   constructor(message, status = 500, details = null) {
